@@ -18,7 +18,71 @@ import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
 import Avatar from "@/components/atoms/Avatar";
 import Label from "@/components/atoms/Label";
+import Select from "@/components/atoms/Select";
 
+// Workflow Indicator Component
+const WorkflowIndicator = ({ currentStatus }) => {
+  const statuses = [
+    { name: "Open", icon: "Circle", color: "blue" },
+    { name: "In Progress", icon: "Clock", color: "yellow" },
+    { name: "Resolved", icon: "CheckCircle", color: "green" },
+    { name: "Closed", icon: "XCircle", color: "gray" }
+  ];
+
+  const currentIndex = statuses.findIndex(s => s.name === currentStatus);
+
+  return (
+    <div className="bg-white rounded-lg shadow-card border border-gray-200 p-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">Workflow Progress</h3>
+      <div className="flex items-center justify-between">
+        {statuses.map((status, index) => {
+          const isActive = index === currentIndex;
+          const isCompleted = index < currentIndex;
+          const isUpcoming = index > currentIndex;
+
+          return (
+            <div key={status.name} className="flex items-center">
+              <div className="flex flex-col items-center">
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 ${
+                    isActive
+                      ? `bg-${status.color}-500 text-white shadow-lg`
+                      : isCompleted
+                      ? "bg-green-500 text-white"
+                      : "bg-gray-200 text-gray-500"
+                  }`}
+                >
+                  <ApperIcon
+                    name={isCompleted ? "Check" : status.icon}
+                    className="w-5 h-5"
+                  />
+                </div>
+                <span
+                  className={`text-xs font-medium mt-2 text-center ${
+                    isActive
+                      ? "text-gray-900"
+                      : isCompleted
+                      ? "text-green-600"
+                      : "text-gray-500"
+                  }`}
+                >
+                  {status.name}
+                </span>
+              </div>
+              {index < statuses.length - 1 && (
+                <div
+                  className={`flex-1 h-0.5 mx-4 transition-all duration-200 ${
+                    isCompleted ? "bg-green-500" : "bg-gray-200"
+                  }`}
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
 const Issues = () => {
   const { onMenuClick } = useOutletContext();
   const [issues, setIssues] = useState([]);
@@ -132,8 +196,7 @@ const handleIssueClick = (issue) => {
     setModalOpen(false);
     setSelectedIssue(null);
   };
-
-  const getStatusCounts = () => {
+const getStatusCounts = () => {
     const counts = {
       total: issues.length,
       open: issues.filter(i => i.status === "Open").length,
@@ -141,7 +204,7 @@ const handleIssueClick = (issue) => {
       resolved: issues.filter(i => i.status === "Resolved").length,
       closed: issues.filter(i => i.status === "Closed").length
     };
-return counts;
+    return counts;
   };
 
   const getStatusVariant = (status) => {
@@ -156,6 +219,29 @@ return counts;
         return "gray";
       default:
         return "gray";
+    }
+  };
+
+  const handleStatusChange = async (newStatus) => {
+    if (!selectedIssue || newStatus === selectedIssue.status) return;
+    
+    try {
+      const updatedIssue = await issuesService.updateStatus(selectedIssue.Id, newStatus);
+      
+      // Update the selected issue
+      setSelectedIssue(updatedIssue);
+      
+      // Update the issues list
+      setIssues(prevIssues =>
+        prevIssues.map(issue =>
+          issue.Id === updatedIssue.Id ? updatedIssue : issue
+        )
+      );
+      
+      toast.success(`Issue status updated to "${newStatus}"`);
+    } catch (error) {
+      console.error("Error updating status:", error);
+      toast.error("Failed to update issue status");
     }
   };
   if (loading) {
@@ -225,6 +311,9 @@ if (showDetailView && selectedIssue) {
               </Button>
             </div>
 
+            {/* Workflow Indicator */}
+            <WorkflowIndicator currentStatus={selectedIssue.status} />
+
             {/* Issue Header */}
             <div className="bg-white rounded-lg shadow-card border border-gray-200 p-6">
               <div className="flex items-start justify-between mb-4">
@@ -237,7 +326,7 @@ if (showDetailView && selectedIssue) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-sm">
                 <div>
                   <Label className="text-gray-600">Assignee</Label>
                   {assignee ? (
@@ -268,10 +357,32 @@ if (showDetailView && selectedIssue) {
                 </div>
 
                 <div>
+                  <Label className="text-gray-600">Status</Label>
+                  <Select
+                    value={selectedIssue.status}
+                    onChange={(e) => handleStatusChange(e.target.value)}
+                    className="mt-1 w-full"
+                  >
+                    <option value="Open">Open</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                    <option value="Closed">Closed</option>
+                  </Select>
+                </div>
+
+                <div>
                   <Label className="text-gray-600">Created</Label>
-                  <span className="text-gray-900 mt-1 block">
+                  <span className="text-gray-900 mt-1 block text-sm">
                     {format(new Date(selectedIssue.createdAt), "PPpp")}
                   </span>
+                  {selectedIssue.statusChangedAt && selectedIssue.statusChangedAt !== selectedIssue.createdAt && (
+                    <>
+                      <Label className="text-gray-600 mt-2 block">Status Changed</Label>
+                      <span className="text-gray-900 mt-1 block text-sm">
+                        {format(new Date(selectedIssue.statusChangedAt), "PPpp")}
+                      </span>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

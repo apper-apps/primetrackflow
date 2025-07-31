@@ -41,7 +41,8 @@ useEffect(() => {
         priority: issue.priority || "Medium",
         assigneeId: issue.assigneeId || "",
         projectId: issue.projectId || "",
-        tags: issue.tags || ""
+        tags: issue.tags || "",
+        statusChangedAt: issue.statusChangedAt || issue.createdAt
       });
     } else {
       setFormData({
@@ -51,7 +52,8 @@ useEffect(() => {
         priority: "Medium",
         assigneeId: "",
         projectId: "",
-        tags: ""
+        tags: "",
+        statusChangedAt: new Date().toISOString()
       });
     }
     setErrors({});

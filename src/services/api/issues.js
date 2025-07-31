@@ -19,13 +19,14 @@ export const issuesService = {
     return { ...issue };
   },
 
-  async create(issueData) {
+async create(issueData) {
     await delay(400);
     const newIssue = {
       Id: Math.max(...issues.map(i => i.Id)) + 1,
       ...issueData,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      statusChangedAt: new Date().toISOString()
     };
     issues.push(newIssue);
     return { ...newIssue };
@@ -37,10 +38,36 @@ export const issuesService = {
     if (index === -1) {
       throw new Error("Issue not found");
     }
+    
+    const currentIssue = issues[index];
+    const statusChanged = updateData.status && updateData.status !== currentIssue.status;
+    
     issues[index] = {
-      ...issues[index],
+      ...currentIssue,
       ...updateData,
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      ...(statusChanged && { statusChangedAt: new Date().toISOString() })
+    };
+    return { ...issues[index] };
+  },
+
+  async updateStatus(id, newStatus) {
+    await delay(200);
+    const index = issues.findIndex(item => item.Id === parseInt(id));
+    if (index === -1) {
+      throw new Error("Issue not found");
+    }
+    
+    const currentIssue = issues[index];
+    if (currentIssue.status === newStatus) {
+      return { ...currentIssue };
+    }
+    
+    issues[index] = {
+      ...currentIssue,
+      status: newStatus,
+      updatedAt: new Date().toISOString(),
+      statusChangedAt: new Date().toISOString()
     };
     return { ...issues[index] };
   },
