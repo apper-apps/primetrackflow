@@ -1,0 +1,72 @@
+import issuesData from "@/services/mockData/issues.json";
+
+let issues = [...issuesData];
+
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+export const issuesService = {
+  async getAll() {
+    await delay(300);
+    return [...issues];
+  },
+
+  async getById(id) {
+    await delay(200);
+    const issue = issues.find(item => item.Id === parseInt(id));
+    if (!issue) {
+      throw new Error("Issue not found");
+    }
+    return { ...issue };
+  },
+
+  async create(issueData) {
+    await delay(400);
+    const newIssue = {
+      Id: Math.max(...issues.map(i => i.Id)) + 1,
+      ...issueData,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    issues.push(newIssue);
+    return { ...newIssue };
+  },
+
+  async update(id, updateData) {
+    await delay(300);
+    const index = issues.findIndex(item => item.Id === parseInt(id));
+    if (index === -1) {
+      throw new Error("Issue not found");
+    }
+    issues[index] = {
+      ...issues[index],
+      ...updateData,
+      updatedAt: new Date().toISOString()
+    };
+    return { ...issues[index] };
+  },
+
+  async delete(id) {
+    await delay(250);
+    const index = issues.findIndex(item => item.Id === parseInt(id));
+    if (index === -1) {
+      throw new Error("Issue not found");
+    }
+    issues.splice(index, 1);
+    return true;
+  },
+
+  async getByStatus(status) {
+    await delay(250);
+    return issues.filter(issue => issue.status === status);
+  },
+
+  async search(query) {
+    await delay(200);
+    const searchTerm = query.toLowerCase();
+    return issues.filter(issue => 
+      issue.title.toLowerCase().includes(searchTerm) ||
+      issue.description.toLowerCase().includes(searchTerm) ||
+      issue.Id.toString().includes(searchTerm)
+    );
+  }
+};

@@ -1,0 +1,20 @@
+[
+  {
+    "Id": 1,
+    "name": "TrackFlow Platform",
+    "description": "Core issue tracking platform development and maintenance",
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "Id": 2,
+    "name": "Mobile Application",
+    "description": "Native mobile apps for iOS and Android platforms",
+    "createdAt": "2024-01-05T00:00:00Z"
+  },
+  {
+    "Id": 3,
+    "name": "API Integration",
+    "description": "Third-party integrations and API development",
+    "createdAt": "2024-01-10T00:00:00Z"
+  }
+]

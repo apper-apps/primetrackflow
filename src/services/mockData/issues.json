@@ -1,0 +1,112 @@
+[
+  {
+    "Id": 1,
+    "title": "User authentication fails on mobile Safari",
+    "description": "Users are unable to log in through Safari on iOS devices. The login button becomes unresponsive after entering credentials.",
+    "status": "Open",
+    "priority": "High",
+    "assigneeId": "2",
+    "createdAt": "2024-01-15T09:30:00Z",
+    "updatedAt": "2024-01-16T14:22:00Z",
+    "projectId": "1"
+  },
+  {
+    "Id": 2,
+    "title": "Dashboard loading performance issues",
+    "description": "The main dashboard takes over 5 seconds to load with large datasets. Need to optimize database queries and implement caching.",
+    "status": "In Progress",
+    "priority": "Critical",
+    "assigneeId": "1",
+    "createdAt": "2024-01-14T11:15:00Z",
+    "updatedAt": "2024-01-17T10:45:00Z",
+    "projectId": "1"
+  },
+  {
+    "Id": 3,
+    "title": "Add export functionality to reports",
+    "description": "Users need the ability to export reports in PDF and Excel formats. This should include all current filtering options.",
+    "status": "Open",
+    "priority": "Medium",
+    "assigneeId": "3",
+    "createdAt": "2024-01-13T16:20:00Z",
+    "updatedAt": "2024-01-15T08:30:00Z",
+    "projectId": "2"
+  },
+  {
+    "Id": 4,
+    "title": "Fix broken email notifications",
+    "description": "Email notifications for issue assignments are not being sent. SMTP configuration appears to be correct.",
+    "status": "Resolved",
+    "priority": "High",
+    "assigneeId": "4",
+    "createdAt": "2024-01-12T13:45:00Z",
+    "updatedAt": "2024-01-16T17:20:00Z",
+    "projectId": "1"
+  },
+  {
+    "Id": 5,
+    "title": "Update API documentation",
+    "description": "API documentation is outdated and missing several new endpoints introduced in v2.1. Need comprehensive update.",
+    "status": "Open",
+    "priority": "Low",
+    "assigneeId": "5",
+    "createdAt": "2024-01-11T10:00:00Z",
+    "updatedAt": "2024-01-14T12:15:00Z",
+    "projectId": "3"
+  },
+  {
+    "Id": 6,
+    "title": "Implement dark mode toggle",
+    "description": "Add dark mode support across the application with user preference persistence. Include proper contrast ratios for accessibility.",
+    "status": "In Progress",
+    "priority": "Medium",
+    "assigneeId": "2",
+    "createdAt": "2024-01-10T14:30:00Z",
+    "updatedAt": "2024-01-17T09:15:00Z",
+    "projectId": "2"
+  },
+  {
+    "Id": 7,
+    "title": "Database migration script fails on production",
+    "description": "The v2.1 database migration script encounters foreign key constraint errors in production environment.",
+    "status": "Critical",
+    "priority": "Critical",
+    "assigneeId": "1",
+    "createdAt": "2024-01-17T08:00:00Z",
+    "updatedAt": "2024-01-17T12:30:00Z",
+    "projectId": "1"
+  },
+  {
+    "Id": 8,
+    "title": "Add keyboard shortcuts for power users",
+    "description": "Implement common keyboard shortcuts (Ctrl+N for new issue, Ctrl+/ for search, etc.) to improve productivity.",
+    "status": "Open",
+    "priority": "Low",
+    "assigneeId": "3",
+    "createdAt": "2024-01-09T11:45:00Z",
+    "updatedAt": "2024-01-12T15:20:00Z",
+    "projectId": "2"
+  },
+  {
+    "Id": 9,
+    "title": "Fix responsive layout on tablet devices",
+    "description": "The sidebar navigation doesn't work properly on iPad and other tablet devices in portrait mode.",
+    "status": "Closed",
+    "priority": "Medium",
+    "assigneeId": "4",
+    "createdAt": "2024-01-08T16:10:00Z",
+    "updatedAt": "2024-01-15T11:25:00Z",
+    "projectId": "2"
+  },
+  {
+    "Id": 10,
+    "title": "Integrate with Slack for notifications",
+    "description": "Add Slack integration to send issue notifications to specific channels based on project and priority level.",
+    "status": "Open",
+    "priority": "Medium",
+    "assigneeId": "5",
+    "createdAt": "2024-01-07T12:30:00Z",
+    "updatedAt": "2024-01-10T14:45:00Z",
+    "projectId": "3"
+  }
+]
