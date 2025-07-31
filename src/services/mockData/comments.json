@@ -1,0 +1,50 @@
+[
+  {
+    "Id": 1,
+    "issueId": 1,
+    "userId": 2,
+    "content": "I can reproduce this issue consistently. It happens every time I try to submit the form without filling in all required fields.",
+    "createdAt": "2024-01-15T10:30:00Z",
+    "updatedAt": "2024-01-15T10:30:00Z"
+  },
+  {
+    "Id": 2,
+    "issueId": 1,
+    "userId": 1,
+    "content": "Thanks for the report. I'll look into the validation logic and see what's causing this.",
+    "createdAt": "2024-01-15T14:15:00Z",
+    "updatedAt": "2024-01-15T14:15:00Z"
+  },
+  {
+    "Id": 3,
+    "issueId": 1,
+    "userId": 3,
+    "content": "I've pushed a potential fix to the validation-fix branch. Can you test it and let me know if the issue persists?",
+    "createdAt": "2024-01-16T09:45:00Z",
+    "updatedAt": "2024-01-16T09:45:00Z"
+  },
+  {
+    "Id": 4,
+    "issueId": 2,
+    "userId": 1,
+    "content": "The new dashboard layout looks great! Just a few minor adjustments needed for mobile responsiveness.",
+    "createdAt": "2024-01-14T16:20:00Z",
+    "updatedAt": "2024-01-14T16:20:00Z"
+  },
+  {
+    "Id": 5,
+    "issueId": 3,
+    "userId": 4,
+    "content": "This performance issue is critical. Load times are exceeding 5 seconds on the main page.",
+    "createdAt": "2024-01-13T11:00:00Z",
+    "updatedAt": "2024-01-13T11:00:00Z"
+  },
+  {
+    "Id": 6,
+    "issueId": 3,
+    "userId": 1,
+    "content": "I've identified the bottleneck. The issue is with the database queries. Working on optimization now.",
+    "createdAt": "2024-01-13T15:30:00Z",
+    "updatedAt": "2024-01-13T15:30:00Z"
+  }
+]

@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { projectsService } from "@/services/api/projects";
 import { usersService } from "@/services/api/users";
 import { issuesService } from "@/services/api/issues";
+import { commentsService } from "@/services/api/comments";
 import ApperIcon from "@/components/ApperIcon";
 import PriorityIndicator from "@/components/molecules/PriorityIndicator";
 import StatusFilter from "@/components/molecules/StatusFilter";
@@ -19,7 +20,7 @@ import Button from "@/components/atoms/Button";
 import Avatar from "@/components/atoms/Avatar";
 import Label from "@/components/atoms/Label";
 import Select from "@/components/atoms/Select";
-
+import Textarea from "@/components/atoms/Textarea";
 // Workflow Indicator Component
 const WorkflowIndicator = ({ currentStatus }) => {
   const statuses = [
@@ -86,7 +87,7 @@ const WorkflowIndicator = ({ currentStatus }) => {
 const Issues = () => {
   const { onMenuClick } = useOutletContext();
   const [issues, setIssues] = useState([]);
-  const [users, setUsers] = useState([]);
+const [users, setUsers] = useState([]);
   const [projects, setProjects] = useState([]);
   const [filteredIssues, setFilteredIssues] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -97,6 +98,9 @@ const [selectedIssue, setSelectedIssue] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("view");
   const [showDetailView, setShowDetailView] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
+  const [commentLoading, setCommentLoading] = useState(false);
   const loadData = async () => {
     try {
       setLoading(true);
@@ -117,11 +121,27 @@ const [selectedIssue, setSelectedIssue] = useState(null);
     } finally {
       setLoading(false);
     }
+};
+
+  const loadComments = async (issueId) => {
+    try {
+      const issueComments = commentsService.getCommentsByIssueId(issueId);
+      setComments(issueComments);
+    } catch (err) {
+      console.error("Failed to load comments:", err);
+      setComments([]);
+    }
   };
 
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (selectedIssue) {
+      loadComments(selectedIssue.Id);
+    }
+  }, [selectedIssue]);
 
   useEffect(() => {
     let filtered = issues;
@@ -143,7 +163,6 @@ const [selectedIssue, setSelectedIssue] = useState(null);
 
     setFilteredIssues(filtered);
   }, [issues, activeFilter, searchTerm]);
-
   const handleSearch = (term) => {
     setSearchTerm(term);
   };
@@ -187,8 +206,31 @@ const handleIssueClick = (issue) => {
         setSelectedIssue(updatedIssue);
         toast.success("Issue updated successfully");
       }
-    } catch (err) {
+} catch (err) {
       toast.error(`Failed to ${modalMode === "create" ? "create" : "update"} issue`);
+    }
+  };
+
+  const handleAddComment = async () => {
+    if (!newComment.trim() || !selectedIssue) return;
+
+    setCommentLoading(true);
+    try {
+      const commentData = {
+        issueId: selectedIssue.Id,
+        userId: 1, // Current user - in a real app this would come from auth context
+        content: newComment.trim()
+      };
+
+      const createdComment = commentsService.create(commentData);
+      setComments(prev => [...prev, createdComment]);
+      setNewComment("");
+      toast.success("Comment added successfully");
+    } catch (err) {
+      toast.error("Failed to add comment");
+      console.error("Comment creation error:", err);
+    } finally {
+      setCommentLoading(false);
     }
   };
 
@@ -196,6 +238,11 @@ const handleIssueClick = (issue) => {
     setModalOpen(false);
     setSelectedIssue(null);
   };
+
+  const getUserById = (userId) => {
+    return users.find(user => user.Id === userId);
+  };
+
 const getStatusCounts = () => {
     const counts = {
       total: issues.length,
@@ -387,7 +434,7 @@ if (showDetailView && selectedIssue) {
               </div>
             </div>
 
-            {/* Description */}
+{/* Description */}
             <div className="bg-white rounded-lg shadow-card border border-gray-200 p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Description</h2>
               <div className="prose max-w-none">
@@ -397,13 +444,113 @@ if (showDetailView && selectedIssue) {
               </div>
             </div>
 
-            {/* Comments Section Placeholder */}
+            {/* Comments Section */}
             <div className="bg-white rounded-lg shadow-card border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Comments</h2>
-              <div className="text-center py-8 text-gray-500">
-                <ApperIcon name="MessageSquare" className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                <p>No comments yet</p>
-                <p className="text-sm">Be the first to add a comment</p>
+              <h2 className="text-lg font-semibold text-gray-900 mb-6">
+                Comments ({comments.length})
+              </h2>
+              
+              {/* Comments Timeline */}
+              <div className="space-y-6 mb-8">
+                {comments.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <ApperIcon name="MessageSquare" className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                    <p>No comments yet</p>
+                    <p className="text-sm">Be the first to add a comment</p>
+                  </div>
+                ) : (
+                  comments.map((comment, index) => {
+                    const commenter = getUserById(comment.userId);
+                    const isLastComment = index === comments.length - 1;
+                    
+                    return (
+                      <div key={comment.Id} className="relative">
+                        {/* Timeline line */}
+                        {!isLastComment && (
+                          <div className="absolute left-5 top-12 w-0.5 h-full bg-gray-200" />
+                        )}
+                        
+                        <div className="flex gap-4">
+                          {/* Avatar */}
+                          <div className="flex-shrink-0">
+                            <Avatar
+                              src={commenter?.avatar}
+                              alt={commenter?.name || 'Unknown User'}
+                              className="w-10 h-10"
+                            />
+                          </div>
+                          
+                          {/* Comment content */}
+                          <div className="flex-1 min-w-0">
+                            <div className="bg-gray-50 rounded-lg p-4">
+                              {/* Header */}
+                              <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-medium text-gray-900">
+                                    {commenter?.name || 'Unknown User'}
+                                  </span>
+                                  <span className="text-sm text-gray-500">
+                                    {format(new Date(comment.createdAt), 'MMM d, yyyy at h:mm a')}
+                                  </span>
+                                </div>
+                              </div>
+                              
+                              {/* Comment text */}
+                              <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                                {comment.content}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+
+              {/* Comment Composition Area */}
+              <div className="pt-6 border-t border-gray-200">
+                <div className="flex gap-4">
+                  {/* Current user avatar */}
+                  <div className="flex-shrink-0">
+                    <Avatar
+                      src={users.find(u => u.Id === 1)?.avatar}
+                      alt="Your Avatar"
+                      className="w-10 h-10"
+                    />
+                  </div>
+                  
+                  {/* Comment input */}
+                  <div className="flex-1">
+                    <Textarea
+                      placeholder="Add a comment..."
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      className="w-full min-h-[100px] mb-3 resize-none"
+                      disabled={commentLoading}
+                    />
+                    
+                    <div className="flex justify-end">
+                      <Button
+                        onClick={handleAddComment}
+                        disabled={!newComment.trim() || commentLoading}
+                        className="bg-primary hover:bg-primary/90 text-white px-4 py-2"
+                      >
+                        {commentLoading ? (
+                          <>
+                            <ApperIcon name="Loader2" className="w-4 h-4 mr-2 animate-spin" />
+                            Adding...
+                          </>
+                        ) : (
+                          <>
+                            <ApperIcon name="Send" className="w-4 h-4 mr-2" />
+                            Add Comment
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
