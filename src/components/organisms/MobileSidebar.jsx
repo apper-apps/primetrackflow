@@ -1,8 +1,31 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
 import { cn } from "@/utils/cn";
+import { AuthContext } from "../../App";
 
+// Logout Button Component
+const LogoutButton = () => {
+  const { logout } = useContext(AuthContext);
+  const { user } = useSelector((state) => state.user);
+  
+  const handleLogout = () => {
+    logout();
+  };
+  
+  return (
+    <Button
+      onClick={handleLogout}
+      variant="ghost"
+      className="w-full flex items-center justify-start px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors"
+    >
+      <ApperIcon name="LogOut" className="w-4 h-4 mr-3" />
+      <span className="text-sm">Logout</span>
+    </Button>
+  );
+};
 const MobileSidebar = ({ isOpen, onClose }) => {
   const navigation = [
     {
@@ -111,7 +134,7 @@ const MobileSidebar = ({ isOpen, onClose }) => {
         </nav>
 
         {/* User Profile */}
-        <div className="px-4 py-4 border-t border-gray-700">
+<div className="px-4 py-4 border-t border-gray-700">
           <div className="flex items-center px-4 py-3 rounded-lg bg-gray-800/50">
             <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center">
               <span className="text-sm font-medium text-white">TC</span>
@@ -120,6 +143,11 @@ const MobileSidebar = ({ isOpen, onClose }) => {
               <p className="text-sm font-medium text-white">Team Lead</p>
               <p className="text-xs text-gray-400">Project Manager</p>
             </div>
+          </div>
+          
+          {/* Logout Button */}
+          <div className="mt-3">
+            <LogoutButton />
           </div>
         </div>
       </div>
