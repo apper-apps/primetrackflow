@@ -6,9 +6,9 @@ import { cn } from "@/utils/cn";
 const SearchBar = ({ onSearch, placeholder = "Search issues...", className }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
+useEffect(() => {
     const debounceTimer = setTimeout(() => {
-      onSearch(searchTerm);
+      onSearch && onSearch(searchTerm);
     }, 300);
 
     return () => clearTimeout(debounceTimer);
