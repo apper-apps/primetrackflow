@@ -13,7 +13,7 @@ function App() {
       <div className="min-h-screen bg-background">
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route index element={<Issues />} />
+<Route index element={<Dashboard />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="issues" element={<Issues />} />
             <Route path="projects" element={<Projects />} />
