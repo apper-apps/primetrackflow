@@ -19,11 +19,14 @@ export const projectsService = {
     return { ...project };
   },
 
-  async create(projectData) {
+async create(projectData) {
     await delay(350);
     const newProject = {
       Id: Math.max(...projects.map(p => p.Id)) + 1,
-      ...projectData,
+      name: projectData.name,
+      description: projectData.description,
+      teamMembers: projectData.teamMembers || [],
+      lastActivity: projectData.lastActivity || new Date().toISOString(),
       createdAt: new Date().toISOString()
     };
     projects.push(newProject);
