@@ -168,10 +168,10 @@ const [selectedIssue, setSelectedIssue] = useState(null);
   };
 
   const handleFilterChange = (filter) => {
-    setActiveFilter(filter);
+setActiveFilter(filter);
   };
 
-const handleIssueClick = (issue) => {
+  const handleIssueClick = (issue) => {
     setSelectedIssue(issue);
     setShowDetailView(true);
   };

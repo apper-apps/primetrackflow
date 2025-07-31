@@ -35,12 +35,13 @@ const Header = ({
         </div>
 
         <div className="flex items-center space-x-4">
-          {/* Search Bar */}
+{/* Search Bar */}
           <div className="hidden md:block">
             <SearchBar 
               onSearch={onSearch}
               placeholder="Search issues..."
               className="w-80"
+              showInstantResults={true}
             />
           </div>
 
@@ -64,11 +65,12 @@ const Header = ({
         </div>
       </div>
 
-      {/* Mobile search */}
+{/* Mobile search */}
       <div className="md:hidden mt-4">
         <SearchBar 
           onSearch={onSearch}
           placeholder="Search issues..."
+          showInstantResults={true}
         />
       </div>
     </header>

@@ -85,15 +85,37 @@ async create(issueData) {
     return issues.filter(issue => issue.status === status);
   },
 
-  async search(query) {
+async search(query) {
     await delay(200);
-    const searchTerm = query.toLowerCase();
-    return issues.filter(issue => 
-      issue.title.toLowerCase().includes(searchTerm) ||
-      issue.description.toLowerCase().includes(searchTerm) ||
-      issue.Id.toString().includes(searchTerm)
-    );
-}
+    if (!query || !query.trim()) {
+      return [];
+    }
+    
+    const searchTerm = query.toLowerCase().trim();
+    return issues
+      .filter(issue => 
+        issue.title.toLowerCase().includes(searchTerm) ||
+        issue.description.toLowerCase().includes(searchTerm) ||
+        issue.Id.toString().includes(searchTerm) ||
+        issue.status.toLowerCase().includes(searchTerm) ||
+        issue.priority.toLowerCase().includes(searchTerm)
+      )
+      .sort((a, b) => {
+        // Prioritize title matches over description matches
+        const aTitleMatch = a.title.toLowerCase().includes(searchTerm);
+        const bTitleMatch = b.title.toLowerCase().includes(searchTerm);
+        
+        if (aTitleMatch && !bTitleMatch) return -1;
+        if (!aTitleMatch && bTitleMatch) return 1;
+        
+        // Secondary sort by priority (Critical > High > Medium > Low)
+        const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
+        const aPriority = priorityOrder[a.priority.toLowerCase()] || 0;
+        const bPriority = priorityOrder[b.priority.toLowerCase()] || 0;
+        
+        return bPriority - aPriority;
+      });
+  }
 };
 
 // Named export for direct import compatibility
