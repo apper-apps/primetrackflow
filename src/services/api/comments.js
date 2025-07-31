@@ -1,23 +1,99 @@
-import mockComments from '@/services/mockData/comments.json';
-
-// In-memory storage for comments
-let comments = [...mockComments];
-let nextId = Math.max(...comments.map(c => c.Id), 0) + 1;
+import { toast } from 'react-toastify';
 
 /**
  * Get all comments for a specific issue
  * @param {number} issueId - The issue ID to get comments for
  * @returns {Array} Array of comment objects for the issue
  */
-const getCommentsByIssueId = (issueId) => {
-  if (!issueId || typeof issueId !== 'number') {
-    throw new Error('Valid issue ID is required');
+const getCommentsByIssueId = async (issueId) => {
+  try {
+    if (!issueId || typeof issueId !== 'number') {
+      throw new Error('Valid issue ID is required');
+    }
+    
+    const tableName = 'app_Comment';
+    
+    const params = {
+      fields: [
+        {
+          field: {
+            Name: "Name"
+          }
+        },
+        {
+          field: {
+            Name: "Tags"
+          }
+        },
+        {
+          field: {
+            Name: "Owner"
+          }
+        },
+        {
+          field: {
+            Name: "issueId"
+          }
+        },
+        {
+          field: {
+            Name: "userId"
+          }
+        },
+        {
+          field: {
+            Name: "content"
+          }
+        },
+        {
+          field: {
+            Name: "createdAt"
+          }
+        },
+        {
+          field: {
+            Name: "updatedAt"
+          }
+        }
+      ],
+      where: [
+        {
+          FieldName: "issueId",
+          Operator: "EqualTo",
+          Values: [issueId]
+        }
+      ],
+      orderBy: [
+        {
+          fieldName: "createdAt",
+          sorttype: "ASC"
+        }
+      ]
+    };
+    
+    const { ApperClient } = window.ApperSDK;
+    const apperClient = new ApperClient({
+      apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+      apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+    });
+    
+    const response = await apperClient.fetchRecords(tableName, params);
+    
+    if (!response.success) {
+      console.error(response.message);
+      toast.error(response.message);
+      return [];
+    }
+    
+    return response.data || [];
+  } catch (error) {
+    if (error?.response?.data?.message) {
+      console.error("Error fetching comments:", error?.response?.data?.message);
+    } else {
+      console.error(error.message);
+    }
+    return [];
   }
-  
-  return comments
-    .filter(comment => comment.issueId === issueId)
-    .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
-    .map(comment => ({ ...comment }));
 };
 
 /**
@@ -25,13 +101,81 @@ const getCommentsByIssueId = (issueId) => {
  * @param {number} id - The comment ID
  * @returns {Object|null} The comment object or null if not found
  */
-const getById = (id) => {
-  if (!id || typeof id !== 'number') {
-    throw new Error('Valid comment ID is required');
+const getById = async (id) => {
+  try {
+    if (!id || typeof id !== 'number') {
+      throw new Error('Valid comment ID is required');
+    }
+    
+    const tableName = 'app_Comment';
+    
+    const params = {
+      fields: [
+        {
+          field: {
+            Name: "Name"
+          }
+        },
+        {
+          field: {
+            Name: "Tags"
+          }
+        },
+        {
+          field: {
+            Name: "Owner"
+          }
+        },
+        {
+          field: {
+            Name: "issueId"
+          }
+        },
+        {
+          field: {
+            Name: "userId"
+          }
+        },
+        {
+          field: {
+            Name: "content"
+          }
+        },
+        {
+          field: {
+            Name: "createdAt"
+          }
+        },
+        {
+          field: {
+            Name: "updatedAt"
+          }
+        }
+      ]
+    };
+    
+    const { ApperClient } = window.ApperSDK;
+    const apperClient = new ApperClient({
+      apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+      apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+    });
+    
+    const response = await apperClient.getRecordById(tableName, id, params);
+    
+    if (!response.success) {
+      console.error(response.message);
+      return null;
+    }
+    
+    return response.data;
+  } catch (error) {
+    if (error?.response?.data?.message) {
+      console.error(`Error fetching comment with ID ${id}:`, error?.response?.data?.message);
+    } else {
+      console.error(error.message);
+    }
+    return null;
   }
-  
-  const comment = comments.find(c => c.Id === id);
-  return comment ? { ...comment } : null;
 };
 
 /**
@@ -39,32 +183,76 @@ const getById = (id) => {
  * @param {Object} commentData - The comment data
  * @returns {Object} The created comment
  */
-const create = (commentData) => {
-  const { issueId, userId, content } = commentData;
-  
-  if (!issueId || typeof issueId !== 'number') {
-    throw new Error('Valid issue ID is required');
+const create = async (commentData) => {
+  try {
+    const { issueId, userId, content } = commentData;
+    
+    if (!issueId || typeof issueId !== 'number') {
+      throw new Error('Valid issue ID is required');
+    }
+    
+    if (!userId || typeof userId !== 'number') {
+      throw new Error('Valid user ID is required');
+    }
+    
+    if (!content || typeof content !== 'string' || content.trim() === '') {
+      throw new Error('Comment content is required');
+    }
+    
+    const tableName = 'app_Comment';
+    
+    const params = {
+      records: [
+        {
+          Name: `Comment on Issue ${issueId}`,
+          issueId: issueId,
+          userId: parseInt(userId),
+          content: content.trim(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }
+      ]
+    };
+    
+    const { ApperClient } = window.ApperSDK;
+    const apperClient = new ApperClient({
+      apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+      apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+    });
+    
+    const response = await apperClient.createRecord(tableName, params);
+    
+    if (!response.success) {
+      console.error(response.message);
+      toast.error(response.message);
+      return null;
+    }
+    
+    if (response.results) {
+      const successfulRecords = response.results.filter(result => result.success);
+      const failedRecords = response.results.filter(result => !result.success);
+      
+      if (failedRecords.length > 0) {
+        console.error(`Failed to create ${failedRecords.length} comments:${JSON.stringify(failedRecords)}`);
+        
+        failedRecords.forEach(record => {
+          record.errors?.forEach(error => {
+            toast.error(`${error.fieldLabel}: ${error.message}`);
+          });
+          if (record.message) toast.error(record.message);
+        });
+      }
+      
+      return successfulRecords.length > 0 ? successfulRecords[0].data : null;
+    }
+  } catch (error) {
+    if (error?.response?.data?.message) {
+      console.error("Error creating comment:", error?.response?.data?.message);
+    } else {
+      console.error(error.message);
+    }
+    return null;
   }
-  
-  if (!userId || typeof userId !== 'number') {
-    throw new Error('Valid user ID is required');
-  }
-  
-  if (!content || typeof content !== 'string' || content.trim() === '') {
-    throw new Error('Comment content is required');
-  }
-  
-  const newComment = {
-    Id: nextId++,
-    issueId,
-    userId,
-    content: content.trim(),
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  };
-  
-  comments.push(newComment);
-  return { ...newComment };
 };
 
 /**
@@ -73,25 +261,63 @@ const create = (commentData) => {
  * @param {Object} updateData - The data to update
  * @returns {Object} The updated comment
  */
-const update = (id, updateData) => {
-  if (!id || typeof id !== 'number') {
-    throw new Error('Valid comment ID is required');
+const update = async (id, updateData) => {
+  try {
+    if (!id || typeof id !== 'number') {
+      throw new Error('Valid comment ID is required');
+    }
+    
+    const tableName = 'app_Comment';
+    
+    const params = {
+      records: [
+        {
+          Id: parseInt(id),
+          content: updateData.content,
+          updatedAt: new Date().toISOString()
+        }
+      ]
+    };
+    
+    const { ApperClient } = window.ApperSDK;
+    const apperClient = new ApperClient({
+      apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+      apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+    });
+    
+    const response = await apperClient.updateRecord(tableName, params);
+    
+    if (!response.success) {
+      console.error(response.message);
+      toast.error(response.message);
+      return null;
+    }
+    
+    if (response.results) {
+      const successfulUpdates = response.results.filter(result => result.success);
+      const failedUpdates = response.results.filter(result => !result.success);
+      
+      if (failedUpdates.length > 0) {
+        console.error(`Failed to update ${failedUpdates.length} comments:${JSON.stringify(failedUpdates)}`);
+        
+        failedUpdates.forEach(record => {
+          record.errors?.forEach(error => {
+            toast.error(`${error.fieldLabel}: ${error.message}`);
+          });
+          if (record.message) toast.error(record.message);
+        });
+      }
+      
+      return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
+    }
+  } catch (error) {
+    if (error?.response?.data?.message) {
+      console.error("Error updating comment:", error?.response?.data?.message);
+    } else {
+      console.error(error.message);
+    }
+    return null;
   }
-  
-  const index = comments.findIndex(c => c.Id === id);
-  if (index === -1) {
-    throw new Error('Comment not found');
-  }
-  
-  const updatedComment = {
-    ...comments[index],
-    ...updateData,
-    Id: id, // Ensure ID cannot be changed
-    updatedAt: new Date().toISOString()
-  };
-  
-  comments[index] = updatedComment;
-  return { ...updatedComment };
 };
 
 /**
@@ -99,18 +325,54 @@ const update = (id, updateData) => {
  * @param {number} id - The comment ID
  * @returns {boolean} True if deleted successfully
  */
-const deleteComment = (id) => {
-  if (!id || typeof id !== 'number') {
-    throw new Error('Valid comment ID is required');
+const deleteComment = async (id) => {
+  try {
+    if (!id || typeof id !== 'number') {
+      throw new Error('Valid comment ID is required');
+    }
+    
+    const tableName = 'app_Comment';
+    
+    const params = {
+      RecordIds: [parseInt(id)]
+    };
+    
+    const { ApperClient } = window.ApperSDK;
+    const apperClient = new ApperClient({
+      apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+      apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+    });
+    
+    const response = await apperClient.deleteRecord(tableName, params);
+    
+    if (!response.success) {
+      console.error(response.message);
+      toast.error(response.message);
+      return false;
+    }
+    
+    if (response.results) {
+      const successfulDeletions = response.results.filter(result => result.success);
+      const failedDeletions = response.results.filter(result => !result.success);
+      
+      if (failedDeletions.length > 0) {
+        console.error(`Failed to delete ${failedDeletions.length} comments:${JSON.stringify(failedDeletions)}`);
+        
+        failedDeletions.forEach(record => {
+          if (record.message) toast.error(record.message);
+        });
+      }
+      
+      return successfulDeletions.length > 0;
+    }
+  } catch (error) {
+    if (error?.response?.data?.message) {
+      console.error("Error deleting comment:", error?.response?.data?.message);
+    } else {
+      console.error(error.message);
+    }
+    return false;
   }
-  
-  const index = comments.findIndex(c => c.Id === id);
-  if (index === -1) {
-    throw new Error('Comment not found');
-  }
-  
-  comments.splice(index, 1);
-  return true;
 };
 
 export const commentsService = {
