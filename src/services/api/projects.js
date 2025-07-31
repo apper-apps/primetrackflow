@@ -1,4 +1,5 @@
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
+import React from "react";
 
 export const projectsService = {
   async getAll() {
@@ -56,7 +57,7 @@ export const projectsService = {
       }
       
       return response.data || [];
-    } catch (error) {
+} catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error fetching projects:", error?.response?.data?.message);
       } else {
@@ -115,7 +116,7 @@ export const projectsService = {
       }
       
       return response.data;
-    } catch (error) {
+} catch (error) {
       if (error?.response?.data?.message) {
         console.error(`Error fetching project with ID ${id}:`, error?.response?.data?.message);
       } else {
@@ -171,7 +172,7 @@ export const projectsService = {
         
         return successfulRecords.length > 0 ? successfulRecords[0].data : null;
       }
-    } catch (error) {
+} catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error creating project:", error?.response?.data?.message);
       } else {
@@ -227,7 +228,7 @@ export const projectsService = {
         
         return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
       }
-    } catch (error) {
+} catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error updating project:", error?.response?.data?.message);
       } else {
@@ -271,8 +272,10 @@ export const projectsService = {
           });
         }
         
-        return successfulDeletions.length > 0;
+return successfulDeletions.length > 0;
       }
+      
+      return true;
     } catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error deleting project:", error?.response?.data?.message);

@@ -86,7 +86,7 @@ const getCommentsByIssueId = async (issueId) => {
     }
     
     return response.data || [];
-  } catch (error) {
+} catch (error) {
     if (error?.response?.data?.message) {
       console.error("Error fetching comments:", error?.response?.data?.message);
     } else {
@@ -168,7 +168,7 @@ const getById = async (id) => {
     }
     
     return response.data;
-  } catch (error) {
+} catch (error) {
     if (error?.response?.data?.message) {
       console.error(`Error fetching comment with ID ${id}:`, error?.response?.data?.message);
     } else {
@@ -245,7 +245,7 @@ const create = async (commentData) => {
       
       return successfulRecords.length > 0 ? successfulRecords[0].data : null;
     }
-  } catch (error) {
+} catch (error) {
     if (error?.response?.data?.message) {
       console.error("Error creating comment:", error?.response?.data?.message);
     } else {
@@ -310,7 +310,7 @@ const update = async (id, updateData) => {
       
       return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
     }
-  } catch (error) {
+} catch (error) {
     if (error?.response?.data?.message) {
       console.error("Error updating comment:", error?.response?.data?.message);
     } else {
@@ -365,7 +365,7 @@ const deleteComment = async (id) => {
       
       return successfulDeletions.length > 0;
     }
-  } catch (error) {
+} catch (error) {
     if (error?.response?.data?.message) {
       console.error("Error deleting comment:", error?.response?.data?.message);
     } else {

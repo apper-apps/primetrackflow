@@ -1,4 +1,5 @@
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
+import React from "react";
 
 export const usersService = {
   async getAll() {
@@ -56,7 +57,7 @@ export const usersService = {
       }
       
       return response.data || [];
-    } catch (error) {
+} catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error fetching users:", error?.response?.data?.message);
       } else {
@@ -115,7 +116,7 @@ export const usersService = {
       }
       
       return response.data;
-    } catch (error) {
+} catch (error) {
       if (error?.response?.data?.message) {
         console.error(`Error fetching user with ID ${id}:`, error?.response?.data?.message);
       } else {
@@ -170,7 +171,7 @@ export const usersService = {
         }
         
         return successfulRecords.length > 0 ? successfulRecords[0].data : null;
-      }
+}
     } catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error creating user:", error?.response?.data?.message);
@@ -227,6 +228,7 @@ export const usersService = {
         }
         
         return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
+return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
       }
     } catch (error) {
       if (error?.response?.data?.message) {
@@ -273,6 +275,7 @@ export const usersService = {
         }
         
         return successfulDeletions.length > 0;
+return successfulDeletions.length > 0;
       }
     } catch (error) {
       if (error?.response?.data?.message) {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import Header from "@/components/organisms/Header";
 import ApperIcon from "@/components/ApperIcon";
-import { getAllIssues } from "@/services/api/issues";
+import { issuesService } from "@/services/api/issues";
 import Chart from "react-apexcharts";
 import { format, subDays, isAfter, isBefore, differenceInDays } from "date-fns";
 const Dashboard = () => {
@@ -13,9 +13,9 @@ const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    const fetchIssues = async () => {
+const fetchIssues = async () => {
       try {
-        const data = await getAllIssues();
+        const data = await issuesService.getAll();
         setIssues(data);
       } catch (error) {
         console.error('Error fetching issues:', error);

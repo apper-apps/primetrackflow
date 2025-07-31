@@ -123,9 +123,9 @@ const [selectedIssue, setSelectedIssue] = useState(null);
     }
 };
 
-  const loadComments = async (issueId) => {
+const loadComments = async (issueId) => {
     try {
-      const issueComments = commentsService.getCommentsByIssueId(issueId);
+      const issueComments = await commentsService.getCommentsByIssueId(issueId);
       setComments(issueComments);
     } catch (err) {
       console.error("Failed to load comments:", err);
@@ -221,8 +221,7 @@ setActiveFilter(filter);
         userId: 1, // Current user - in a real app this would come from auth context
         content: newComment.trim()
       };
-
-      const createdComment = commentsService.create(commentData);
+const createdComment = await commentsService.create(commentData);
       setComments(prev => [...prev, createdComment]);
       setNewComment("");
       toast.success("Comment added successfully");

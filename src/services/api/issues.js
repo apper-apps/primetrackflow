@@ -1,4 +1,5 @@
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
+import React from "react";
 
 export const issuesService = {
   async getAll() {
@@ -85,7 +86,7 @@ export const issuesService = {
         return [];
       }
       
-      return response.data || [];
+return response.data || [];
     } catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error fetching issues:", error?.response?.data?.message);
@@ -174,7 +175,7 @@ export const issuesService = {
         return null;
       }
       
-      return response.data;
+return response.data;
     } catch (error) {
       if (error?.response?.data?.message) {
         console.error(`Error fetching issue with ID ${id}:`, error?.response?.data?.message);
@@ -235,7 +236,7 @@ export const issuesService = {
           });
         }
         
-        return successfulRecords.length > 0 ? successfulRecords[0].data : null;
+return successfulRecords.length > 0 ? successfulRecords[0].data : null;
       }
     } catch (error) {
       if (error?.response?.data?.message) {
@@ -297,7 +298,7 @@ export const issuesService = {
           });
         }
         
-        return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
+return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
       }
     } catch (error) {
       if (error?.response?.data?.message) {
@@ -352,7 +353,7 @@ export const issuesService = {
           });
         }
         
-        return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
+return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
       }
     } catch (error) {
       if (error?.response?.data?.message) {
@@ -398,7 +399,7 @@ export const issuesService = {
           });
         }
         
-        return successfulDeletions.length > 0;
+return successfulDeletions.length > 0;
       }
     } catch (error) {
       if (error?.response?.data?.message) {
@@ -628,7 +629,7 @@ export const issuesService = {
         return [];
       }
       
-      return response.data || [];
+return response.data || [];
     } catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error searching issues:", error?.response?.data?.message);
