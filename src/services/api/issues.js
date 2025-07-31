@@ -18,7 +18,6 @@ export const issuesService = {
     }
     return { ...issue };
   },
-
 async create(issueData) {
     await delay(400);
     const newIssue = {
@@ -31,7 +30,6 @@ async create(issueData) {
     issues.push(newIssue);
     return { ...newIssue };
   },
-
   async update(id, updateData) {
     await delay(300);
     const index = issues.findIndex(item => item.Id === parseInt(id));
@@ -95,5 +93,8 @@ async create(issueData) {
       issue.description.toLowerCase().includes(searchTerm) ||
       issue.Id.toString().includes(searchTerm)
     );
-  }
+}
 };
+
+// Named export for direct import compatibility
+export const getAllIssues = () => issuesService.getAll();
