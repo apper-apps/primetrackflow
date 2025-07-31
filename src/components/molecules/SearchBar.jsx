@@ -6,7 +6,7 @@ import { cn } from '@/utils/cn';
 const SearchBar = ({ 
   placeholder = "Search issues...", 
   value = "", 
-  onChange, 
+  onChange = () => {}, 
   className,
   onSearch,
   ...props 
