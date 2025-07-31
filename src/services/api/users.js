@@ -227,7 +227,6 @@ export const usersService = {
           });
         }
         
-        return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
 return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
       }
     } catch (error) {
@@ -274,7 +273,6 @@ return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
           });
         }
         
-        return successfulDeletions.length > 0;
 return successfulDeletions.length > 0;
       }
     } catch (error) {
